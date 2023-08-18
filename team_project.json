@@ -1,0 +1,215 @@
+{
+    "tuki": {
+        "organization": "algarrobo",
+        "projects": [
+            {
+                "name": "activities-bff",
+                "key": "ar.edu.ues21:activities-bff"
+            },
+            {
+                "name": "activities-ui",
+                "key": "activities-ui"
+            },
+            {
+                "name": "physical-virtual-resources-api",
+                "key": "ar.edu.ues21:physical-virtual-resources-api"
+            },
+            {
+                "name": "physical-virtual-resources-bff",
+                "key": "ar.edu.ues21:physical-virtual-resources-bff"
+            },
+            {
+                "name": "program-management-backend",
+                "key": "program.management.backend:program-management-backend"
+            },
+            {
+                "name": "program-management-bff",
+                "key": "program-management-bff"
+            },
+            {
+                "name": "program-management-frontend",
+                "key": "program-management-frontend"
+            },
+            {
+                "name": "program-management-producer",
+                "key": "ar.edu.ues21:program-management-producer"
+            },
+            {
+                "name": "sis-config-backend",
+                "key": "sis.config.backend:sis-config-backend"
+            },
+            {
+                "name": "sis-config-bff",
+                "key": "sis-config-bff"
+            },
+            {
+                "name": "sis-config-frontend",
+                "key": "sis-config-frontend"
+            },
+            {
+                "name": "sis-consumer",
+                "key": "ar.edu.ues21:sis-consumer"
+            },
+            {
+                "name": "sis-config-backend",
+                "key": "sis.config.backend:sis-config-backend"
+            },
+            {
+                "name": "sis-config-bff",
+                "key": "sis-config-bff"
+            },
+            {
+                "name": "sis-config-frontend",
+                "key": "sis-config-frontend"
+            },
+            {
+                "name": "sis-consumer",
+                "key": "ar.edu.ues21:sis-consumer"
+            },
+            {
+                "name": "thesis-backend",
+                "key": "thesis.backend:thesis-backend"
+            },
+            {
+                "name": "thesis-bff",
+                "key": "thesis-bff"
+            },
+            {
+                "name": "thesis-frontend",
+                "key": "thesis-frontend"
+            },
+            {
+                "name": "titles-backend",
+                "key": "ar.titles.backend:titles-backend"
+            },
+            {
+                "name": "titles-bff",
+                "key": "titles-bff"
+            },
+            {
+                "name": "titles-consumer",
+                "key": "titles.consumer.backend:titles-consumer"
+            },
+            {
+                "name": "titles-frontend",
+                "key": "titles-frontend"
+            }
+        ]
+    },
+    "valhalla": {
+        "organization": "algarrobo",
+        "projects": [
+            {
+                "name": "attendance-backend",
+                "key": "ar.edu.ues21:attendance-backend"
+            },
+            {
+                "name": "attendance-bff",
+                "key": "attendance-bff"
+            },
+            {
+                "name": "attendance-frontend",
+                "key": "attendance-frontend"
+            },
+            {
+                "name": "student-attendance-bff",
+                "key": "ar.edu.ues21:student-attendance-bff"
+            }
+        ]
+    },
+    "stranger": {
+        "organization": "algarrobo",
+        "projects": [
+            {
+                "name": "equivalency-api",
+                "key": "ar.edu.ues21:equivalency-api"
+            },
+            {
+                "name": "equivalency-manager-bff",
+                "key": "ar.edu.ues21:equivalency-manager-bff"
+            },
+            {
+                "name": "equivalency-manager-ui",
+                "key": "equivalency-manager-ui"
+            },
+            {
+                "name": "equivalency-request-bff",
+                "key": "ar.edu.ues21:equivalency-request-bff"
+            },
+            {
+                "name": "equivalency-request-ui",
+                "key": "equivalency-request-ui"
+            },
+            {
+                "name": "menu-api",
+                "key": "com.ar:menu-api"
+            },
+            {
+                "name": "pricing-api",
+                "key": "ar.edu.ues21:pricing-api"
+            },
+            {
+                "name": "pricing-backend",
+                "key": "ar.edu.ues21:pricing-backend"
+            },
+            {
+                "name": "pricing-bff",
+                "key": "ar.edu.ues21:pricing-bff"
+            },
+            {
+                "name": "pricing-ui",
+                "key": "pricing-ui"
+            }
+        ]
+    },
+    "prometeo": {
+        "organization": "algarrobo",
+        "projects": [
+            {
+                "name": "notifications-api",
+                "key": "ar.edu.ues21:notifications-api"
+            },
+            {
+                "name": "student-attendance-frontend",
+                "key": "student-attendance-frontend"
+            }
+        ]
+    },
+    "qbit": {
+        "organization": "algarrobo",
+        "projects": [
+            {
+                "name": "assessment-backend",
+                "key": "q2-assessment-backend"
+            },
+            {
+                "name": "assessment-bff",
+                "key": "q2-assessment-bff"
+            },
+            {
+                "name": "assessment-frontend",
+                "key": "assessment-frontend"
+            },
+            {
+                "name": "proctoring-service",
+                "key": "q2-proctoring-service"
+            },
+            {
+                "name": "q2-consumer",
+                "key": "q2-q2-consumer"
+            },
+            {
+                "name": "q2-event-service",
+                "key": "CodeReview-q2-event"
+            },
+            {
+                "name": "statement-backend",
+                "key": "q2-statement-backend"
+            },
+            {
+                "name": "statement-bff",
+                "key": "q2-statement-bff"
+            }
+        ]
+    }
+}
