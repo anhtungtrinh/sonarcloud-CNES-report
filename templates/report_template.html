@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNES Report - {{ project_name }}</title>
+
+    <!-- Include external CSS and JS libraries -->
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        header {
+            background: #007bff;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            margin: 0;
+        }
+        main {
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            border-left: 5px solid #007bff;
+            padding-left: 10px;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #007bff;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #333;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .pie-chart-container {
+            display: flex;
+            justify-content: space-evenly;
+            margin: 20px 0;
+        }
+        .pie-chart {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: #f2f2f2;
+            border-radius: 5px;
+            height: 20px;
+            position: relative;
+            width: 100px;
+            margin: 0 auto;
+        }
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 20px;
+            color: #fff;
+        }
+
+        .filter-container {
+            margin-bottom: 15px;
+        }
+        .filter-container label, .filter-container select {
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <h1>CNES Report</h1>
+    <h3>{{ project_name }} ({{ project_key }})</h3>
+</header>
+<main>
+    <!-- Project Metrics Section -->
+    <div class="section metrics">
+        <h2>Project Metrics</h2>
+        <table class="metrics-table">
+            <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Visualization</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for metric, value in metrics.items() %}
+            <tr>
+                <td>{{ metric }}</td>
+                <td>{{ value }}</td>
+                <td>
+                    {% if metric == 'coverage' %}
+                    <div class="progress-bar {{ 'green' if float(value) >= 80 else 'yellow' if float(value) >= 50 else 'red' }}">
+                        <span style="width: {{ float(value) }}%;">{{ value }}%</span>
+                    </div>
+                    {% elif metric == 'duplicated_lines_density' %}
+                    <div class="progress-bar {{ 'green' if float(value) <= 5 else 'yellow' if float(value) <= 20 else 'red' }}">
+                        <span style="width: {{ float(value) }}%;">{{ value }}%</span>
+                    </div>
+                    {% else %}
+                    {{ value }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Bar chart for Metrics -->
+        <canvas id="metricsChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Issues Section -->
+    <div class="section issues">
+        <h2>Project Issues</h2>
+
+        <!-- Filter options -->
+        <div class="filter-container">
+            <label for="severityFilter">Filter by Severity:</label>
+            <select id="severityFilter">
+                <option value="all">All</option>
+                <option value="BLOCKER">BLOCKER</option>
+                <option value="CRITICAL">CRITICAL</option>
+                <option value="MAJOR">MAJOR</option>
+                <option value="MINOR">MINOR</option>
+                <option value="INFO">INFO</option>
+            </select>
+
+            <label for="typeFilter">Filter by Type:</label>
+            <select id="typeFilter">
+                <option value="all">All</option>
+                <option value="BUG">BUG</option>
+                <option value="VULNERABILITY">VULNERABILITY</option>
+                <option value="CODE_SMELL">CODE SMELL</option>
+            </select>
+
+            <label for="statusFilter">Filter by Status:</label>
+            <select id="statusFilter">
+                <option value="all">All</option>
+                <option value="OPEN">OPEN</option>
+                <option value="CONFIRMED">CONFIRMED</option>
+                <option value="REOPENED">REOPENED</option>
+            </select>
+        </div>
+
+        <!-- Table for Issues -->
+        <table id="issuesTable">
+            <thead>
+            <tr>
+                <th>Severity</th>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Component</th>
+                <th>Line</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for issue in issues %}
+            <tr>
+                <td>{{ issue.severity }}</td>
+                <td>{{ issue.type }}</td>
+                <td>{{ issue.message }}</td>
+                <td>{{ issue.component }}</td>
+                <td>{{ issue.line | default('N/A') }}</td>
+                <td>{{ issue.status }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pie chart for Issues Distribution -->
+    <div class="pie-chart-container">
+        <div class="pie-chart" id="issuesPieChart"></div>
+    </div>
+</main>
+<footer>
+    <p>Generated by CNES Report Generator</p>
+</footer>
+
+<script>
+    // DataTables functionality for filtering and search
+    $(document).ready(function() {
+        const table = $('#issuesTable').DataTable({
+            "columnDefs": [
+                { "targets": 0, "searchable": true },
+                { "targets": 1, "searchable": true },
+                { "targets": 2, "searchable": true },
+                { "targets": 3, "searchable": true },
+                { "targets": 4, "searchable": true },
+                { "targets": 5, "searchable": true }
+            ]
+        });
+
+        // Custom filtering function
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            var severity = $("#severityFilter").val();
+            var type = $("#typeFilter").val();
+            var status = $("#statusFilter").val();
+
+            var issueSeverity = data[0]; // Severity column
+            var issueType = data[1]; // Type column
+            var issueStatus = data[5]; // Status column
+
+            if (
+                (severity === "all" || issueSeverity === severity) &&
+                (type === "all" || issueType === type) &&
+                (status === "all" || issueStatus === status)
+            ) {
+                return true;
+            }
+            return false;
+        });
+
+        // Redraw table when filter changes
+        $("#severityFilter, #typeFilter, #statusFilter").on("change", function() {
+            table.draw();
+        });
+    });
+
+    // Bar chart for Metrics Overview
+    const ctx = document.getElementById('metricsChart').getContext('2d');
+    const metricsData = {
+        labels: ['Coverage', 'Duplicated Lines', 'Bugs', 'Vulnerabilities'],
+        datasets: [{
+            label: 'Metrics',
+            data: [{{ metrics['coverage'] | default(0) }}, {{ metrics['duplicated_lines_density'] | default(0) }}, {{ metrics['bugs'] | default(0) }}, {{ metrics['vulnerabilities'] | default(0) }}],
+    backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#007bff'],
+        borderColor: ['#28a745', '#ffc107', '#dc3545', '#007bff'],
+        borderWidth: 1
+    }]
+    };
+
+    const metricsChart = new Chart(ctx, {
+        type: 'bar',
+        data: metricsData,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Issues Pie Chart
+    const pieData = {
+        labels: ['Bugs', 'Vulnerabilities', 'Code Smells'],
+        datasets: [{
+            data: [{{ issues | length }}], // Replace with actual issue data
+    backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+        hoverBackgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+    }]
+    };
+
+    const pieCtx = document.getElementById('issuesPieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: pieData,
+    });
+</script>
+</body>
+</html>

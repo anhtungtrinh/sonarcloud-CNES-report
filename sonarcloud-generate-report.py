@@ -1,51 +1,45 @@
-#!/usr/bin/python3
-
-import sys
-import jinja2
 import json
-from datetime import datetime
-from types import SimpleNamespace
-from sonarmetrics import SonarMetrics
+from jinja2 import Environment, FileSystemLoader
+import argparse
 
-template_file = "new-report-template.html"
+def load_data(json_file):
+    """Load the JSON data from the specified file."""
+    with open(json_file, 'r') as file:
+        return json.load(file)
 
-def load_projects_data_from_file(filename):
-    # Load the projects data from the JSON file
-    with open(filename, "r") as data_file:
-        data = data_file.read()
-        sm = SonarMetrics.from_json(data)
-    return sm
+def generate_html_report(data, template_path, output_file):
+    """Generate an HTML report from the data using the specified template."""
+    env = Environment(loader=FileSystemLoader(template_path))
+    template = env.get_template('report_template.html')
 
-def generate_report(team, projects_data):
-    # Load the HTML template
-    template_loader = jinja2.FileSystemLoader(searchpath="./")
-    template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template(template_file)
+    metrics = {metric['metric']: metric['value'] for metric in data['measures']['component']['measures']}
+    issues = data['issues']
 
-    # Render the template with data
-    report_html = template.render(team=team, sm=projects_data)
+    html_content = template.render(
+        project_name=data['project_name'],
+        project_key=data['project_key'],
+        metrics=metrics,
+        issues=issues,
+        float=float,  # Pass float function to the template
+        int=int       # Pass int function to the template
+    )
 
-    # Get the current timestamp
-    current_timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    with open(output_file, 'w') as output:
+        output.write(html_content)
+    print(f"Report successfully generated: {output_file}")
 
-    # Generate the filename with the current timestamp
-    report_filename = f"sonarcloud_report_{team}_{current_timestamp}.html"
+def main():
+    parser = argparse.ArgumentParser(description='Generate an HTML report from JSON data.')
+    parser.add_argument('json_file', help='Path to the JSON file')
+    args = parser.parse_args()
 
-    # Write the report to the file with the generated filename
-    with open(report_filename, "w") as report_file:
-        report_file.write(report_html)
+    json_file = args.json_file
+    template_path = "./templates"
+    output_file = "CNES_Report.html"
 
+    # Load data and generate report
+    data = load_data(json_file)
+    generate_html_report(data, template_path, output_file)
 
-# The rest of the script remains the same...
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python  {sys.argv[0]} <team> <data_filename>")
-        sys.exit(1)
-
-    # Load the projects data from the saved JSON file
-    data_filename = sys.argv[2]
-    projects_data = load_projects_data_from_file(data_filename)
-
-    # Generate the report
-    team = sys.argv[1]
-    generate_report(team, projects_data)
+    main()
